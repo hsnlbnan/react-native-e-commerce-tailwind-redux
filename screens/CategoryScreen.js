@@ -19,6 +19,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { BottomSheet } from "../components";
 import { SORT_VALUES } from "../variables";
+import { useNavigation } from "@react-navigation/native";
 
 const productsData = [
   {
@@ -29,6 +30,7 @@ const productsData = [
     image: require("../assets/products/1.png"),
     size: [38, 39, 40, 41, 42, 43, 44],
     colors: ["#FF5A5A", "#2878D5"],
+    bigImage: require("../assets/products/1-big.png"),
   },
   {
     id: 2,
@@ -39,6 +41,7 @@ const productsData = [
     size: [39],
     colors: ["#FF5A5A"],
     image: require("../assets/products/2.png"),
+    bigImage: require("../assets/products/1-big.png"),
   },
   {
     id: 3,
@@ -49,6 +52,7 @@ const productsData = [
     size: [39, 40, 41],
     colors: ["#2878D5", "#FFFFFF"],
     image: require("../assets/products/3.png"),
+    bigImage: require("../assets/products/1-big.png"),
   },
   {
     id: 4,
@@ -59,6 +63,7 @@ const productsData = [
     size: [39, 40, 41],
     colors: ["#2878D5", "#000000", "#FFFFFF"],
     image: require("../assets/products/4.png"),
+    bigImage: require("../assets/products/1-big.png"),
   },
   {
     id: 5,
@@ -69,10 +74,11 @@ const productsData = [
     size: [39, 40, 41],
     colors: ["#2878D5", "#000000"],
     image: require("../assets/products/5.png"),
+    bigImage: require("../assets/products/1-big.png"),
   },
 ];
 
-export default function FavoritesScreen({ navigation }) {
+export default function FavoritesScreen() {
   const dispatch = useDispatch();
   const selectedProductView = useSelector(getProductView);
 
@@ -134,97 +140,92 @@ export default function FavoritesScreen({ navigation }) {
     }
   }, [selectedColors]);
 
+  const navigation = useNavigation();
+
   const handleNavigateProductDetail = (product) => {
-    navigation.navigate("ProductDetailScreen", { product });
+    navigation.navigate("SearchProductDetail", { product });
   };
 
   return (
     <BottomSheetModalProvider>
-      <View className="flex flex-row flex-wrap justify-between bg-white h-full flex-1">
-        <SafeAreaView>
-          <Text className="text-lg font-light text-left py-7 px-5 tracking-widest">
-            All Products
-          </Text>
-          <View className="flex flex-row justify-between items-center px-5 mb-3">
+      <View className="flex  flex-wrap justify-between bg-white h-full flex-1">
+        <Text className="text-lg font-light text-left py-7 px-5 tracking-widest">
+          All Products
+        </Text>
+        <View className="flex flex-row justify-between items-center px-5 mb-3">
+          <TouchableOpacity
+            onPress={handlePresentModalPress}
+            className="border border-black inline-flex w-24 items-center flex-row text-center justify-center p-2 "
+          >
+            <AntDesign name="filter" size={16} color="black" />
+            <Text className="text-sm font-medium text-black ml-2">Filter</Text>
+          </TouchableOpacity>
+          <View className="flex flex-row justify-between items-center gap-2">
             <TouchableOpacity
-              onPress={handlePresentModalPress}
-              className="border border-black inline-flex w-24 items-center flex-row text-center justify-center p-2 "
+              className={`${
+                selectedProductView === "list" ? "bg-black text-white p-2" : ""
+              } border-black`}
+              onPress={() => {
+                dispatch(setProductView("list"));
+              }}
             >
-              <AntDesign name="filter" size={16} color="black" />
-              <Text className="text-sm font-medium text-black ml-2">
-                Filter
-              </Text>
-            </TouchableOpacity>
-            <View className="flex flex-row justify-between items-center gap-2">
-              <TouchableOpacity
-                className={`${
-                  selectedProductView === "list"
-                    ? "bg-black text-white p-2"
-                    : ""
-                } border-black`}
+              <Feather
+                name="list"
+                size={24}
+                color={selectedProductView === "list" ? "white" : "black"}
                 onPress={() => {
                   dispatch(setProductView("list"));
                 }}
-              >
-                <Feather
-                  name="list"
-                  size={24}
-                  color={selectedProductView === "list" ? "white" : "black"}
-                  onPress={() => {
-                    dispatch(setProductView("list"));
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                className={`${
-                  selectedProductView === "grid"
-                    ? "bg-black text-white p-2"
-                    : ""
-                } border-black`}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              className={`${
+                selectedProductView === "grid" ? "bg-black text-white p-2" : ""
+              } border-black`}
+              onPress={() => {
+                dispatch(setProductView("grid"));
+              }}
+            >
+              <Feather
+                name="grid"
+                size={24}
+                color={selectedProductView === "grid" ? "white" : "black"}
                 onPress={() => {
                   dispatch(setProductView("grid"));
                 }}
-              >
-                <Feather
-                  name="grid"
-                  size={24}
-                  color={selectedProductView === "grid" ? "white" : "black"}
-                  onPress={() => {
-                    dispatch(setProductView("grid"));
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <ScrollView
-            horizontal={false}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            className="flex flex-row flex-wrap w-full bg-white h-full flex-1"
-            contentContainerStyle={{
-              width: "100%",
-              flexDirection: "row",
-              flexWrap: "wrap",
-            }}
-          >
-            {changedProductData?.length === 0 && (
-              <View className="flex flex-row items-center justify-center w-full h-full">
-                <Text className="text-lg font-light text-left py-7 px-5 tracking-widest">
-                  No Products Found
-                </Text>
-              </View>
-            )}
-
-            {changedProductData?.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                selectedProductView={selectedProductView}
-                onClick={() => handleNavigateProductDetail(product)}
               />
-            ))}
-          </ScrollView>
-        </SafeAreaView>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <ScrollView
+          horizontal={false}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          className="flex flex-row flex-wrap w-full bg-white h-full flex-1"
+          contentContainerStyle={{
+            width: "100%",
+            flexDirection: "row",
+            flexWrap: "wrap",
+          }}
+        >
+          {changedProductData?.length === 0 && (
+            <View className="flex flex-row items-center justify-center w-full h-full">
+              <Text className="text-lg font-light text-left py-7 px-5 tracking-widest">
+                No Products Found
+              </Text>
+            </View>
+          )}
+
+          {changedProductData?.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              selectedProductView={selectedProductView}
+              onClick={handleNavigateProductDetail}
+            />
+          ))}
+        </ScrollView>
+
         <BottomSheetModal
           ref={bottomSheetModalRef}
           index={1}

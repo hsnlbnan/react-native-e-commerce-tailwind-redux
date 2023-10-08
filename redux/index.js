@@ -6,10 +6,12 @@ import thunk from "redux-thunk";
 
 import productSlice from "./features/product/productSlice";
 import generalSlice from "./features/general/generalSlice";
+import basketSlice from "./features/basket/basketSlice";
 
 const reducers = combineReducers({
   productSlice,
   generalSlice,
+  basketSlice,
 });
 
 const persistConfig = {

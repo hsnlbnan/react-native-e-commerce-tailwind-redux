@@ -172,7 +172,7 @@ function Category({ id, name, icon, children, onClick, activeCategory }) {
         <View className="flex mt-5">
           {children.map((child) => (
             <TouchableOpacity
-              onPress={() => console.log("child", child)}
+              onPress={onClick}
               key={child.id}
               className="flex rounded-md px-5 mb-5 ml-4"
             >
@@ -194,78 +194,73 @@ export default function SearchScreen({ navigation }) {
     forHerCategories[0].id
   );
 
-  const navigateToCategoyScreen = () => {};
+  const navigateToCategoryScreen = () => {};
 
   const handlePressCategory = (id) => {
-    setActiveCategory(id);
-    navigation.navigate("CategoryScreen");
+    navigation.navigate("Category", { id });
   };
 
   return (
-    <GestureHandlerRootView className="flex-1">
+    <>
       <View className="bg-white flex-1 h-full">
-        <SafeAreaView className="bg-white">
-          <View className="pt-8 pb-3 px-4">
-            <Text className="text-3xl font-light text-gray-500 tracking-widest">
-              SEARCH
+        <View className=" pb-3 px-4">
+          <Text className="text-3xl font-light text-gray-500 tracking-widest">
+            SEARCH
+          </Text>
+          <View className="relative">
+            <Text className="absolute top-1/2 transform -translate-x-1/2 left-4 z-10">
+              <Feather name="search" size={16} color="#333" />
             </Text>
-            <View className="relative">
-              <Text className="absolute top-1/2 transform -translate-x-1/2 left-4 z-10">
-                <Feather name="search" size={16} color="#333" />
-              </Text>
-              <TextInput
-                className="border border-gray-300 rounded-md px-10 py-4 mt-4 bg-[#F5F5F5]"
-                placeholder="Search"
-                keyboardAppearance="dark"
-                onChangeText={(text) => setSearchValue(text)}
-              />
-            </View>
+            <TextInput
+              className="border border-gray-300 rounded-md px-10 py-4 mt-4 bg-[#F5F5F5]"
+              placeholder="Search"
+              keyboardAppearance="dark"
+              onChangeText={(text) => setSearchValue(text)}
+            />
           </View>
-
-          <View className="flex flex-row py-4">
-            {categoriesData.map((category) => (
-              <TouchableOpacity
-                key={category.id}
-                className="flex-1 flex flex-col items-center justify-center border-b border-gray-400 "
-                onPress={() => setActiveCategory(category.id)}
+        </View>
+        <View className="flex flex-row py-4">
+          {categoriesData.map((category) => (
+            <TouchableOpacity
+              key={category.id}
+              className="flex-1 flex flex-col items-center justify-center border-b border-gray-400 "
+              onPress={() => setActiveCategory(category.id)}
+            >
+              <View
+                className={
+                  activeCategory === category.id
+                    ? "text-[#333] font-semibold border-b-[3px] border-[#333] pb-4 z-10 -mb-[2px] rounded-xs"
+                    : "text-[#999] font-normal pb-4 "
+                }
               >
-                <View
+                <Text
                   className={
                     activeCategory === category.id
-                      ? "text-[#333] font-semibold border-b-[3px] border-[#333] pb-4 z-10 -mb-[2px] rounded-xs"
-                      : "text-[#999] font-normal pb-4 "
+                      ? "text-[#333] font-semibold "
+                      : "text-[#999] font-normal "
                   }
                 >
-                  <Text
-                    className={
-                      activeCategory === category.id
-                        ? "text-[#333] font-semibold "
-                        : "text-[#999] font-normal "
-                    }
-                  >
-                    {category.name}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          <View className="px-4">
-            {forHerCategories.map((category) => (
-              <Category
-                key={category.id}
-                id={category.id}
-                name={category.name}
-                icon={<category.icon />}
-                children={category.children}
-                onClick={() => handlePressCategory(category.id)}
-                activeCategory={activeSubCategory}
-                navigateToCategoyScreen={navigateToCategoyScreen}
-              />
-            ))}
-          </View>
-        </SafeAreaView>
+                  {category.name}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View className="px-4">
+          {forHerCategories.map((category) => (
+            <Category
+              key={category.id}
+              id={category.id}
+              name={category.name}
+              icon={<category.icon />}
+              children={category.children}
+              onClick={() => handlePressCategory(category.id)}
+              activeCategory={activeSubCategory}
+              navigateToCategoryScreen={navigateToCategoryScreen}
+            />
+          ))}
+        </View>
       </View>
-    </GestureHandlerRootView>
+    </>
   );
 }
